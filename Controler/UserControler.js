@@ -6,8 +6,8 @@ const { hashPassword, comparePassword } = require("../Modules/PasswordEncrption"
 
 signUp = async (req, res) => {
     const { name, email, password } = req.body
-    try {
-        const existUser = await User.findone({ email: email });
+    // try {
+        const existUser = await User.findOne({ email: email });
         if (existUser) {
             return res.status(400).json({message:"user already exist"})
         }
@@ -20,17 +20,17 @@ signUp = async (req, res) => {
         await newUser.save();
         res.status(201).json({message:"signUp successfully"})
 
-    } catch {
-       res.status((500).json({"message":"internal server error"}))
-    }
+    // } catch {
+    //    res.status(500).json({"message":"internal server error"})
+    // }
 
 
 
 }
 login = async (req, res) => {
     const { email, password } = req.body
-    try {
-        const user = await User.findone({ email: email });
+    // try {
+        const user = await User.findOne({ email: email }).select('+password');
         if (!user)
         {
            return res.status(400).json({"message":"email is not found"})
@@ -41,9 +41,9 @@ login = async (req, res) => {
         }
          res.status(201).json({message:"success",token:generatToken({email:email})})
 
-    } catch {
-  res.status(500).json({message:"internal server error"})
-    }
+//     } catch {
+//   res.status(500).json({message:"internal server error"})
+//     }
   }
 
-  module.exports={signUp}
+  module.exports={signUp,login}
