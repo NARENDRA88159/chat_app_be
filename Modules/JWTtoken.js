@@ -4,8 +4,8 @@ const jwt=require('jsonwebtoken')
 
 
 
-const generatToken = ({ email }) => {
-    const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
+const generatToken = ({ email,user_id }) => {
+    const token = jwt.sign({ email: email,user_id:user_id }, process.env.JWT_SECRET, {
         algorithm:process.env.JWT_ALGORITHM
     })
     return token
