@@ -39,7 +39,7 @@ login = async (req, res) => {
         if (!checkPassword) {
              return res.status(400).json({"message":"password is not valid"})
         }
-         res.status(201).json({message:"success",token:generatToken({email:email})})
+         res.status(201).json({message:"success",token:generatToken({email:email,user_id:user?.id})})
 
 //     } catch {
 //   res.status(500).json({message:"internal server error"})
