@@ -19,6 +19,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs)); // Serve Sw
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
+const multer = require('multer');
 
 app.use("/api/user", UserRoute)
 app.use("/api/userMessage", UserMessageRoute)
@@ -40,6 +41,15 @@ io.on('connection', (socket) => {
     // Broadcast message to all clients (including sender)
     io.emit('message', data);
   });
+
+  socket.on("UpdateMessage", (data) => {
+    io.emit('UpdateMessage', data);
+  })
+
+  socket.on("DeleteMessage", (data) => {
+    io.emit('DeleteMessage', data);
+  })
+
 
   socket.on('disconnect', () => {
     console.log('A user disconnected:', socket.id);

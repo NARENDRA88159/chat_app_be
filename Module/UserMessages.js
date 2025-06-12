@@ -10,7 +10,10 @@ const messageSchema = new Schema({
   },
   message: {
     type: String,
-    required: true,
+    // required: true,
+  },
+  audio: {
+    type: String, // file path or URL to the audio file
   },
   sender_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -24,7 +27,16 @@ const messageSchema = new Schema({
   created_at: {
     type: Date,
     default: Date.now,
+  },
+  delete_for_me: {
+    type: Boolean,
+    default:false
+  },
+  delete_for_everyone: {
+    type: Boolean,
+    default:false
   }
+
 });
 
 const UserMessage = mongoose.model('UserMessage', messageSchema);
