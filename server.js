@@ -49,6 +49,9 @@ io.on('connection', (socket) => {
   socket.on("DeleteMessage", (data) => {
     io.emit('DeleteMessage', data);
   })
+  socket.on("SendAudioMessage", (data) => {
+    io.emit('SendAudioMessage', data);
+  })
 
 
   socket.on('disconnect', () => {
