@@ -15,6 +15,9 @@ const messageSchema = new Schema({
   audio: {
     type: String, // file path or URL to the audio file
   },
+  image: {
+    type: String
+  },
   sender_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
