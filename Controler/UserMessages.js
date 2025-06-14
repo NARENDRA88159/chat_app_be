@@ -4,6 +4,7 @@ const cloudinary = require("../Modules/Cloudinary");
 const dotenv = require("dotenv")
 dotenv.config();
 
+const streamifier = require('streamifier');
 exports.createMessage = async (req, res) => {
   try {
     const { message, sender_id } = req.body;
@@ -103,7 +104,7 @@ exports.audios=async (req, res) => {
 
         await newMessage.save();
 
-        
+
 
         res.status(201).json({ success: true, message: newMessage });
       }
@@ -117,3 +118,49 @@ exports.audios=async (req, res) => {
     res.status(500).json({ error: 'Upload failed' });
   }
 }
+
+exports.Images = async (req, res) => {
+  try {
+    const { sender_id, sender_email } = req.body;
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'No image file uploaded' });
+    }
+
+    const streamUpload = () => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          {
+            resource_type: 'image',
+            folder: 'upload_image',
+          },
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+    };
+
+    const result = await streamUpload();
+
+    const newMessage = new UserMessages({
+      sender_id,
+      sender_email,
+      image: result.secure_url,
+    });
+
+    await newMessage.save();
+
+    res.status(201).json({ success: true, message: newMessage });
+
+  } catch (error) {
+    console.error("Upload failed", error);
+    res.status(500).json({ error: 'Upload failed', detail: error });
+  }
+};

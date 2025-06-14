@@ -52,7 +52,9 @@ io.on('connection', (socket) => {
   socket.on("SendAudioMessage", (data) => {
     io.emit('SendAudioMessage', data);
   })
-
+  socket.on("UploadImage", (data) => {
+    io.emit('UploadImage', data);
+  })
 
   socket.on('disconnect', () => {
     console.log('A user disconnected:', socket.id);
