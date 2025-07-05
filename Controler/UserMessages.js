@@ -5,6 +5,7 @@ const dotenv = require("dotenv")
 dotenv.config();
 
 const streamifier = require('streamifier');
+const redis = require("../Modules/RedisClient");
 exports.createMessage = async (req, res) => {
   try {
     const { message, sender_id } = req.body;
@@ -27,10 +28,22 @@ exports.createMessage = async (req, res) => {
 
 exports.getAllMessages = async (req, res) => {
   try {
-    const messages = await UserMessages.find().sort({ created_at: 1 });
-    res.json(messages);
+    let { limit = 20, page = 1 } = req.query;
+    limit = parseInt(limit);
+    page = parseInt(page);
+
+    // const cachedData = await redis.get("AllMessages")
+    // if (cachedData) {
+    //   return res.status(200).json(JSON.parse(cachedData))
+    // }
+    const skip = (page - 1) * limit;
+    const messages = await UserMessages.find().sort({ created_at: -1 }).skip(skip).limit(limit);
+    const reversedMessages =  messages.reverse()
+    // await redis.set('AllMessages', JSON.stringify(reversedMessages), 'EX', 60);
+
+    res.json(reversedMessages);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error?.message });
   }
 };
 exports.deleteMessage = async (req, res) => {
